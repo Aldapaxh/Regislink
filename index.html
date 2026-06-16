@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regislink · Registro de viajeros sin complicaciones</title>
+<meta name="description" content="Regislink simplifica el registro obligatorio de viajeros para alojamientos turísticos y casas rurales del todo el territorio nacional.">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0f1923;
+    --ink-mid: #3a4a58;
+    --ink-light: #6b7e8f;
+    --blue: #0047CC;
+    --blue-mid: #1a5fd4;
+    --blue-light: #e8f0fd;
+    --blue-glow: #3d7aff;
+    --green: #00875a;
+    --green-light: #e6f4ef;
+    --border: #dce4ed;
+    --bg: #f7f9fc;
+    --white: #ffffff;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--white); color: var(--ink); line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 1.5rem; }
+  .nav-inner { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 58px; }
+  .logo { display: flex; align-items: center; gap: 9px; text-decoration: none; }
+  .logo-mark { width: 32px; height: 32px; background: var(--blue); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-mark svg { color: #fff; }
+  .logo-text { font-size: 18px; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+  .logo-text span { color: var(--blue); }
+  .nav-lang { display: flex; gap: 4px; }
+  .lang-btn { padding: 4px 10px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; background: none; color: var(--ink-light); transition: all 0.15s; }
+  .lang-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .nav-cta { padding: 8px 18px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius); font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; transition: background 0.15s; }
+  .nav-cta:hover { background: var(--blue-mid); }
+
+  /* HERO */
+  .hero { background: linear-gradient(160deg, #f0f5ff 0%, #ffffff 60%); padding: 5rem 1.5rem 4rem; text-align: center; border-bottom: 1px solid var(--border); }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 7px; background: var(--blue-light); color: var(--blue); font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 1.5rem; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; color: var(--ink); line-height: 1.15; letter-spacing: -0.03em; max-width: 720px; margin: 0 auto 1.25rem; }
+  .hero h1 em { color: var(--blue); font-style: normal; }
+  .hero-sub { font-size: clamp(1rem, 2vw, 1.15rem); color: var(--ink-mid); max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { padding: 14px 28px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; transition: background 0.15s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary:hover { background: var(--blue-mid); }
+  .btn-secondary { padding: 14px 28px; background: transparent; color: var(--ink); border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.15s; }
+  .btn-secondary:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* FLOW */
+  .flow { max-width: 1000px; margin: 0 auto; padding: 4rem 1.5rem; }
+  .section-label { font-size: 11px; font-weight: 800; color: var(--blue); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .section-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 3rem; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5px; background: var(--border); border: 1.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .step { background: var(--white); padding: 2rem 1.75rem; }
+  .step-num { font-size: 11px; font-weight: 800; color: var(--blue); letter-spacing: 0.08em; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .step-num::after { content: ''; flex: 1; height: 1px; background: var(--blue-light); }
+  .step-icon { width: 44px; height: 44px; background: var(--blue-light); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .step-icon svg { color: var(--blue); }
+  .step h3 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+  .step p { font-size: 13.5px; color: var(--ink-mid); line-height: 1.65; }
+
+  /* FEATURES */
+  .features { background: var(--bg); padding: 4rem 1.5rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .features-inner { max-width: 1000px; margin: 0 auto; }
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 2.5rem; }
+  .feat { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
+  .feat-icon { width: 40px; height: 40px; background: var(--blue-light); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+  .feat-icon svg { color: var(--blue); }
+  .feat h3 { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .feat p { font-size: 13px; color: var(--ink-mid); line-height: 1.6; }
+
+  /* PRICING */
+  .pricing { max-width: 700px; margin: 0 auto; padding: 4rem 1.5rem; text-align: center; }
+  .price-card { background: var(--white); border: 2px solid var(--blue); border-radius: var(--radius-lg); padding: 2.5rem 2rem; margin-top: 2.5rem; position: relative; overflow: hidden; }
+  .price-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--blue), var(--blue-glow)); }
+  .price-badge { display: inline-block; background: var(--blue); color: #fff; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; margin-bottom: 1.5rem; }
+  .price-setup { font-size: 13px; color: var(--ink-light); margin-bottom: 6px; }
+  .price-main { font-size: 52px; font-weight: 900; color: var(--ink); letter-spacing: -0.04em; line-height: 1; }
+  .price-main sup { font-size: 22px; vertical-align: super; font-weight: 700; }
+  .price-period { font-size: 14px; color: var(--ink-light); margin-top: 6px; margin-bottom: 1.75rem; }
+  .price-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+  .price-features { list-style: none; text-align: left; display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .price-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-mid); }
+  .price-features li svg { color: var(--green); flex-shrink: 0; }
+  .price-setup-note { font-size: 12px; color: var(--ink-light); margin-top: 1rem; }
+
+  /* LEGAL */
+  .legal { background: #f0f5ff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 3rem 1.5rem; }
+  .legal-inner { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: start; }
+  .legal h2 { font-size: 18px; font-weight: 800; color: var(--ink); }
+  .legal p { font-size: 13.5px; color: var(--ink-mid); line-height: 1.7; }
+
+  /* CONTACT */
+  .contact { max-width: 600px; margin: 0 auto; padding: 4rem 1.5rem; text-align: center; }
+  .contact h2 { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 10px; }
+  .contact p { font-size: 15px; color: var(--ink-mid); margin-bottom: 2rem; }
+  .contact-email { display: inline-flex; align-items: center; gap: 10px; padding: 16px 28px; background: var(--blue); color: #fff; border-radius: var(--radius); font-size: 16px; font-weight: 700; text-decoration: none; transition: background 0.15s; }
+  .contact-email:hover { background: var(--blue-mid); }
+  .contact-note { font-size: 13px; color: var(--ink-light); margin-top: 1rem; }
+
+  /* FOOTER */
+  footer { border-top: 1px solid var(--border); padding: 1.5rem; text-align: center; }
+  footer p { font-size: 12px; color: var(--ink-light); }
+
+  /* LANG TOGGLE */
+  [data-eu] { display: none; }
+  body.eu [data-es] { display: none; }
+  body.eu [data-eu] { display: block; }
+  body.eu span[data-eu] { display: inline; }
+  body.eu span[data-es] { display: none; }
+
+  @media (max-width: 600px) {
+    .legal-inner { grid-template-columns: 1fr; }
+    .nav-cta { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <span class="logo-text">Regis<span>link</span></span>
+    </a>
+    <div class="nav-lang">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('eu')">EU</button>
+    </div>
+    <a class="nav-cta" href="mailto:aldapaxh@gmail.com">
+      <span data-es>Solicitar demo</span>
+      <span data-eu>Demo eskatu</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span data-es>Registro obligatorio de viajeros</span>
+    <span data-eu>Bidaiarien nahitaezko erregistroa</span>
+  </div>
+  <h1 data-es>El registro de viajeros <em>sin papel, sin errores,</em> sin perder tiempo.</h1>
+  <h1 data-eu>Bidailarien erregistroa <em>paperik gabe, akatsik gabe,</em> denbora galdu gabe.</h1>
+  <p data-es class="hero-sub">Envías un enlace a tus huéspedes, ellos rellenan sus datos desde el móvil, y tú los tienes listos para cumplir con las Fuerzas y Cuerpos de Seguridad en segundos.</p>
+  <p data-eu class="hero-sub">Esteka bat bidaltzen diezu zure ostatukoei, haiek beren datuak betetzen dituzte mugikorrean, eta zu prest zaude segundotan Segurtasun Indar eta Kidegoetako betebeharrak betetzeko.</p>
+  <div class="hero-actions">
+    <a class="btn-primary" href="mailto:aldapaxh@gmail.com">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <span data-es>Quiero probarlo gratis</span>
+      <span data-eu>Doan probatu nahi dut</span>
+    </a>
+    <a class="btn-secondary" href="#como-funciona">
+      <span data-es>Ver cómo funciona</span>
+      <span data-eu>Nola funtzionatzen duen ikusi</span>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="como-funciona" class="flow">
+  <div class="section-label" data-es>Cómo funciona</div>
+  <div class="section-label" data-eu>Nola funtzionatzen du</div>
+  <div class="section-title" data-es>Tres pasos. Nada más.</div>
+  <div class="section-title" data-eu>Hiru urrats. Ez gehiago.</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <h3 data-es>Envías el enlace</h3>
+      <h3 data-eu>Esteka bidali</h3>
+      <p data-es>Compartes el link de Regislink con tus huéspedes por WhatsApp, email o QR al llegar al alojamiento.</p>
+      <p data-eu>Regislink-en esteka partekatzen duzu zure ostatukoekin WhatsApp bidez, emailez edo QR kode baten bidez.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18" stroke-linecap="round" stroke-width="3"/></svg>
+      </div>
+      <h3 data-es>Ellos rellenan desde el móvil</h3>
+      <h3 data-eu>Haiek mugikorrean betetzen dute</h3>
+      <p data-es>Cada viajero introduce sus datos desde su propio teléfono. El formulario valida que todo esté correcto antes de enviar.</p>
+      <p data-eu>Bidaiari bakoitzak bere datua sartzen ditu bere telefonotik. Inprimakiak dena zuzen dagoela egiaztatzen du bidali aurretik.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <h3 data-es>Tú descargas el Excel</h3>
+      <h3 data-eu>Zuk Excel-a deskargatu</h3>
+      <p data-es>Desde el panel del establecimiento (con PIN privado) ves todos los registros y los descargas para cumplimentar la plataforma de las Fuerzas y Cuerpos de Seguridad.</p>
+      <p data-eu>Establezimenduko paneletik (PIN pribatua) erregistro guztiak ikusten dituzu eta Segurtasun Indar eta Kidegoetako plataforma betetzeko deskargatzen dituzu.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="features-inner">
+    <div class="section-label" data-es>Características</div>
+    <div class="section-label" data-eu>Ezaugarriak</div>
+    <div class="section-title" data-es>Todo lo que necesitas, nada que no necesitas.</div>
+    <div class="section-title" data-eu>Behar duzun guztia, behar ez duzun ezer ez.</div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3 data-es>Cumple con la normativa vigente</h3>
+        <h3 data-eu>Indarrean dagoen araudia betetzen du</h3>
+        <p data-es>Todos los campos exigidos por la normativa, en el orden correcto, con número de referencia automático.</p>
+        <p data-eu>Araudiak eskatutako eremu guztiak, ordena egokian, erreferentzia-zenbaki automatikoarekin.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3 data-es>En segundos, no en minutos</h3>
+        <h3 data-eu>Segundotan, ez minutuetan</h3>
+        <p data-es>Sin instalar nada, sin formar a nadie. El huésped abre el enlace y rellena sus datos en menos de 2 minutos.</p>
+        <p data-eu>Ezer instalatu gabe, inor prestatu gabe. Ostatukoak esteka ireki eta 2 minutu baino gutxiagoan betetzen ditu bere datuak.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18" stroke-linecap="round" stroke-width="3"/></svg></div>
+        <h3 data-es>Funciona en cualquier móvil</h3>
+        <h3 data-eu>Edozein mugikorretan funtzionatzen du</h3>
+        <p data-es>Sin app que descargar. El formulario se abre en el navegador del teléfono del viajero, sea cual sea.</p>
+        <p data-eu>App-ik deskargatu beharrik gabe. Inprimakia bidaiariaren telefonoko nabigatzailean irekitzen da, edozein dela ere.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3 data-es>Excel listo para copiar</h3>
+        <h3 data-eu>Excel-a kopiatzeko prest</h3>
+        <p data-es>Descarga los datos de todos los viajeros en un Excel con las columnas exactas que pide la plataforma de las Fuerzas y Cuerpos de Seguridad.</p>
+        <p data-eu>Bidaiari guztien datuak deskargatu Segurtasun Indar eta Kidegoetako plataformak eskatzen dituen zutabe zehatzekin.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3 data-es>Panel privado con PIN</h3>
+        <h3 data-eu>Panel pribatua PINarekin</h3>
+        <p data-es>Solo el establecimiento accede al panel de gestión. Los datos de los viajeros son privados y seguros.</p>
+        <p data-eu>Establezimendua soilik sartzen da kudeaketa panelera. Bidaiarien datuak pribatuak eta seguruak dira.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3 data-es>Uno o varios viajeros</h3>
+        <h3 data-eu>Bidaiari bat edo gehiago</h3>
+        <p data-es>Cada viajero rellena sus propios datos, o uno del grupo lo hace por todos. Tú decides cómo funciona en tu alojamiento.</p>
+        <p data-eu>Bidaiari bakoitzak bere datuak betetzen ditu, edo taldeko batek guztienak egiten ditu. Zuk erabakitzen duzu nola funtzionatzen duen zure ostatuan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing">
+  <div class="section-label" data-es>Precio</div>
+  <div class="section-label" data-eu>Prezioa</div>
+  <div class="section-title" data-es>Simple y sin sorpresas.</div>
+  <div class="section-title" data-eu>Sinplea eta sorpresarik gabe.</div>
+  <div class="price-card">
+    <div class="price-badge" data-es>PLAN ÚNICO</div>
+    <div class="price-badge" data-eu>PLAN BAKARRA</div>
+    <div class="price-setup" data-es>Alta única: <strong>100 €</strong></div>
+    <div class="price-setup" data-eu>Alta bakarra: <strong>100 €</strong></div>
+    <div class="price-main"><sup>€</sup>9<span style="font-size:28px;font-weight:700;">,90</span></div>
+    <div class="price-period" data-es>al mes · sin permanencia</div>
+    <div class="price-period" data-eu>hileko · iraunkortasunik gabe</div>
+    <hr class="price-divider">
+    <ul class="price-features">
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span data-es>Formulario para viajeros con tu nombre de establecimiento</span><span data-eu>Bidaiarientzako inprimakia zure establezimenduko izenarekin</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span data-es>Panel privado con descarga de Excel</span><span data-eu>Panel pribatua Excel deskargarekin</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span data-es>Número de referencia automático por fecha</span><span data-eu>Erreferentzia-zenbaki automatikoa dataren arabera</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span data-es>Texto de protección de datos incluido</span><span data-eu>Datu-babeseko testua barne</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span data-es>Funciona en móvil, tablet y ordenador</span><span data-eu>Mugikorrean, tabletan eta ordenagailuan funtzionatzen du</span></li>
+      <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span data-es>Soporte por email incluido</span><span data-eu>Email bidezko laguntza barne</span></li>
+    </ul>
+    <a class="btn-primary" href="mailto:aldapaxh@gmail.com" style="width:100%; justify-content:center;">
+      <span data-es>Solicitar alta</span>
+      <span data-eu>Alta eskatu</span>
+    </a>
+    <p class="price-setup-note" data-es>La cuota de alta cubre la configuración personalizada de tu alojamiento.</p>
+    <p class="price-setup-note" data-eu>Alta-kuotaren barruan dago zure ostatuaren konfiguraziora egokitzea.</p>
+  </div>
+</section>
+
+<!-- LEGAL NOTE -->
+<section class="legal">
+  <div class="legal-inner">
+    <div>
+      <div class="section-label" data-es>Marco legal</div>
+      <div class="section-label" data-eu>Esparru legala</div>
+      <h2 data-es>¿Por qué es obligatorio?</h2>
+      <h2 data-eu>Zergatik da nahitaezkoa?</h2>
+    </div>
+    <div>
+      <p data-es>La normativa en vigor obliga a todos los alojamientos turísticos, casas rurales, hoteles y establecimientos similares a registrar los datos de sus viajeros y transmitirlos a las Fuerzas y Cuerpos de Seguridad. El incumplimiento puede suponer sanciones de hasta <strong>30.000 €</strong>. Regislink simplifica este proceso.</p>
+      <p data-eu>Indarrean dagoen araudiak ostatu turistiko, landa-etxe, hotel eta antzeko establezimendu guztiak behartzen ditu, bidaiarien datuak erregistratzera eta Segurtasun Indar eta Kidegoei transmititzera. Ez betetzeak <strong>30.000 €</strong>ko isunak ekar ditzake. Regislink-ek prozesu hau sinplifikatzen du.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact">
+  <h2 data-es>¿Hablamos?</h2>
+  <h2 data-eu>Hitz egiten dugu?</h2>
+  <p data-es>Escríbenos y te montamos una demo con el nombre de tu alojamiento en menos de 24 horas.</p>
+  <p data-eu>Idatzi iezaguzu eta zure ostatuaren izenarekin demo bat prestatuko dizugu 24 ordutan.</p>
+  <a class="contact-email" href="mailto:aldapaxh@gmail.com">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    aldapaxh@gmail.com
+  </a>
+  <p class="contact-note" data-es>También puedes responder a esta página si la recibiste de alguien.</p>
+  <p class="contact-note" data-eu>Orri hau norbaitek bidali badizu, erantzun ere egin dezakezu.</p>
+</section>
+
+<footer>
+  <p>© 2026 Regislink · <span data-es>Registro de viajeros para alojamientos turísticos</span><span data-eu>Bidaiarien erregistroa ostatú turistikoentzat</span></p>
+</footer>
+
+<script>
+function setLang(lang) {
+  document.body.classList.toggle('eu', lang === 'eu');
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.lang-btn:${lang === 'eu' ? 'last-child' : 'first-child'}`).classList.add('active');
+}
+</script>
+</body>
+</html>

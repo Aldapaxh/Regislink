@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel del establecimiento · Registro de viajeros</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue: #003DA6;
+    --blue-mid: #185FA5;
+    --blue-light: #E6F1FB;
+    --blue-border: #B5D4F4;
+    --text: #1a1a1a;
+    --text-muted: #555;
+    --text-hint: #888;
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --border: #dde1e7;
+    --red: #c0392b;
+    --red-light: #fdf0ef;
+    --green: #1e7e45;
+    --green-light: #eaf4ee;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* PIN screen */
+  #pin-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem; }
+  .pin-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 2.5rem 2rem; max-width: 360px; width: 100%; text-align: center; }
+  .pin-icon { width: 56px; height: 56px; background: var(--blue); border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+  .pin-icon svg { color: #fff; }
+  .pin-card h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+  .pin-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .pin-input { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 22px; text-align: center; letter-spacing: 0.3em; color: var(--text); background: var(--surface); margin-bottom: 1rem; }
+  .pin-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); }
+  .pin-input.err { border-color: var(--red); background: var(--red-light); }
+  .pin-err { font-size: 13px; color: var(--red); margin-bottom: 1rem; display: none; }
+  .pin-err.show { display: block; }
+  .btn-pin { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700; cursor: pointer; }
+  .btn-pin:hover { background: #002d7a; }
+
+  /* Main panel */
+  #panel { display: none; padding: 1.5rem 1rem 3rem; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.75rem; flex-wrap: gap; gap: 12px; }
+  .top-bar-left h1 { font-size: 20px; font-weight: 700; }
+  .top-bar-left p { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+  .btn-logout { padding: 8px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 13px; color: var(--text-muted); cursor: pointer; }
+  .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.1rem; }
+  .stat-label { font-size: 11px; font-weight: 700; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .stat-value { font-size: 26px; font-weight: 700; color: var(--blue); }
+
+  .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .search-wrap { flex: 1; min-width: 200px; position: relative; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-hint); }
+  .search-input { width: 100%; padding: 9px 11px 9px 34px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--surface); color: var(--text); }
+  .search-input:focus { outline: none; border-color: var(--blue); }
+  .filter-select { padding: 9px 11px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--surface); color: var(--text); }
+  .btn-refresh { display: flex; align-items: center; gap: 6px; padding: 9px 14px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 13px; color: var(--text-muted); cursor: pointer; }
+  .btn-refresh:hover { border-color: var(--blue-mid); color: var(--blue-mid); }
+  .btn-excel { display: flex; align-items: center; gap: 7px; padding: 9px 16px; background: #1a7a3a; color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 700; cursor: pointer; }
+  .btn-excel:hover { background: #145f2d; }
+
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: #f0f3f8; padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--blue-light); }
+  tbody td { padding: 10px 12px; color: var(--text); vertical-align: middle; }
+  .ref-badge { font-size: 11px; font-weight: 700; background: var(--blue-light); color: var(--blue); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .doc-badge { font-size: 11px; background: #f0f3f8; color: var(--text-muted); padding: 2px 7px; border-radius: 10px; }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-hint); font-size: 14px; }
+
+  .spinner-wrap { text-align: center; padding: 2rem; color: var(--text-hint); font-size: 14px; }
+  .spinner-lg { width: 28px; height: 28px; border: 3px solid var(--blue-light); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .top-bar { flex-direction: column; align-items: flex-start; }
+    thead th:nth-child(n+5) { display: none; }
+    tbody td:nth-child(n+5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pin-screen">
+  <div class="pin-card">
+    <div class="pin-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <p style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px;">Aldapa Xhuara VT</p><h2>Panel del establecimiento</h2>
+    <p>Introduce el PIN para acceder al registro de viajeros.</p>
+    <input class="pin-input" id="pin-input" type="password" maxlength="6" placeholder="····" onkeydown="if(event.key==='Enter') checkPin()">
+    <div class="pin-err" id="pin-err">PIN incorrecto. Inténtalo de nuevo.</div>
+    <button class="btn-pin" onclick="checkPin()">Acceder</button>
+  </div>
+</div>
+
+<div id="panel">
+  <div class="wrap">
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <p style="font-size:12px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;">Aldapa Xhuara VT</p><h1>Registro de viajeros</h1>
+        <p id="last-update">Cargando datos...</p>
+      </div>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Total viajeros</div><div class="stat-value" id="stat-total">—</div></div>
+      <div class="stat"><div class="stat-label">Hoy</div><div class="stat-value" id="stat-today">—</div></div>
+      <div class="stat"><div class="stat-label">Esta semana</div><div class="stat-value" id="stat-week">—</div></div>
+      <div class="stat"><div class="stat-label">Países distintos</div><div class="stat-value" id="stat-paises">—</div></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-input" id="search" type="text" placeholder="Buscar por nombre, documento, nacionalidad..." oninput="renderTable()">
+      </div>
+      <select class="filter-select" id="filter-fecha" onchange="renderTable()">
+        <option value="">Todas las fechas</option>
+        <option value="today">Hoy</option>
+        <option value="week">Esta semana</option>
+        <option value="month">Este mes</option>
+      </select>
+      <button class="btn-refresh" onclick="loadData()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Actualizar
+      </button>
+      <button class="btn-excel" onclick="exportExcel()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Descargar Excel
+      </button>
+    </div>
+
+    <div class="table-wrap">
+      <div id="table-body"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4daZJ3RJzorjB8lzHCxKVfs9uda8j5PMtcco9rqrbhTh4TojoLh6BbNnHMhBYO0-nkg/exec';
+const PIN = '4798';
+
+let allRows = [];
+let headers = [];
+
+function checkPin() {
+  const val = document.getElementById('pin-input').value.trim();
+  if (val === PIN) {
+    document.getElementById('pin-screen').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('pin-input').classList.add('err');
+    document.getElementById('pin-err').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('pin-input').classList.remove('err');
+      document.getElementById('pin-err').classList.remove('show');
+      document.getElementById('pin-input').value = '';
+    }, 2000);
+  }
+}
+
+function logout() {
+  document.getElementById('pin-screen').style.display = 'flex';
+  document.getElementById('panel').style.display = 'none';
+  document.getElementById('pin-input').value = '';
+  allRows = []; headers = [];
+}
+
+async function loadData() {
+  document.getElementById('table-body').innerHTML = '<div class="spinner-wrap"><div class="spinner-lg"></div>Cargando registros...</div>';
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    if (!data.ok || !data.data || data.data.length < 2) {
+      document.getElementById('table-body').innerHTML = '<div class="empty">No hay viajeros registrados todavía.</div>';
+      updateStats([]);
+      return;
+    }
+    headers = data.data[0];
+    allRows = data.data.slice(1);
+    document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleString('es-ES');
+    updateStats(allRows);
+    renderTable();
+  } catch(e) {
+    document.getElementById('table-body').innerHTML = '<div class="empty">Error al cargar los datos. Comprueba la conexión.</div>';
+  }
+}
+
+function updateStats(rows) {
+  const today = new Date().toISOString().slice(0,10);
+  const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString().slice(0,10);
+  const regIdx = headers.indexOf('Registrado');
+  const paisIdx = headers.indexOf('País residencia');
+  const todayCount = rows.filter(r => r[regIdx] && r[regIdx].toString().startsWith(today.split('-').reverse().join('/'))).length;
+  const weekCount = rows.filter(r => {
+    if (!r[regIdx]) return false;
+    const parts = r[regIdx].toString().split('/');
+    if (parts.length < 3) return false;
+    const d = `${parts[2].slice(0,4)}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+    return d >= weekAgo;
+  }).length;
+  const paises = new Set(rows.map(r => r[paisIdx]).filter(Boolean)).size;
+  document.getElementById('stat-total').textContent = rows.length;
+  document.getElementById('stat-today').textContent = todayCount;
+  document.getElementById('stat-week').textContent = weekCount;
+  document.getElementById('stat-paises').textContent = paises;
+}
+
+function renderTable() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const fec = document.getElementById('filter-fecha').value;
+  const today = new Date().toISOString().slice(0,10);
+  const weekAgo = new Date(Date.now() - 7*24*60*60*1000).toISOString().slice(0,10);
+  const monthAgo = new Date(Date.now() - 30*24*60*60*1000).toISOString().slice(0,10);
+
+  const refIdx = headers.indexOf('Nº Referencia');
+  const nomIdx = headers.indexOf('Nombre');
+  const ap1Idx = headers.indexOf('Primer apellido');
+  const docIdx = headers.indexOf('Tipo documento');
+  const ndocIdx = headers.indexOf('Nº documento');
+  const nacIdx = headers.indexOf('Nacionalidad');
+  const entIdx = headers.indexOf('Fecha entrada');
+  const salIdx = headers.indexOf('Fecha salida');
+  const regIdx = headers.indexOf('Registrado');
+  const paisIdx = headers.indexOf('País residencia');
+
+  let filtered = allRows.filter(r => {
+    const text = r.join(' ').toLowerCase();
+    if (q && !text.includes(q)) return false;
+    if (fec && regIdx >= 0 && r[regIdx]) {
+      const parts = r[regIdx].toString().split('/');
+      if (parts.length >= 3) {
+        const d = `${parts[2].slice(0,4)}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        if (fec === 'today' && !d.startsWith(today)) return false;
+        if (fec === 'week' && d < weekAgo) return false;
+        if (fec === 'month' && d < monthAgo) return false;
+      }
+    }
+    return true;
+  });
+
+  if (!filtered.length) {
+    document.getElementById('table-body').innerHTML = '<div class="empty">No se encontraron viajeros con ese criterio.</div>';
+    return;
+  }
+
+  let html = `<table><thead><tr>
+    <th>Referencia</th><th>Nombre</th><th>Documento</th>
+    <th>Nacionalidad</th><th>Entrada</th><th>Salida</th><th>Registrado</th>
+  </tr></thead><tbody>`;
+
+  filtered.forEach(r => {
+    html += `<tr>
+      <td><span class="ref-badge">${r[refIdx]||'—'}</span></td>
+      <td><strong>${r[nomIdx]||''} ${r[ap1Idx]||''}</strong></td>
+      <td><span class="doc-badge">${r[docIdx]||''}</span> ${r[ndocIdx]||''}</td>
+      <td>${r[nacIdx]||'—'}</td>
+      <td>${r[entIdx]||'—'}</td>
+      <td>${r[salIdx]||'—'}</td>
+      <td style="color:var(--text-hint);font-size:12px;">${r[regIdx]||'—'}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById('table-body').innerHTML = html;
+}
+
+function exportExcel() {
+  if (!allRows.length) { alert('No hay datos para exportar.'); return; }
+  const data = [headers, ...allRows];
+  const ws = XLSX.utils.aoa_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Viajeros');
+  const today = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `registro_viajeros_${today}.xlsx`);
+}
+
+document.getElementById('pin-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPin();
+});
+</script>
+</body>
+</html>
