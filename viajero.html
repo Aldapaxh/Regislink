@@ -278,6 +278,17 @@ function selPill(type, el, val) {
 function clearErr(el) { el.classList.remove('err'); }
 function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 
+function validateFormat(doc, val) {
+  val = val.trim().toUpperCase();
+  if (doc === 'DNI') {
+    // DNI: 8 digits + 1 letter, or NIE: X/Y/Z + 7 digits + 1 letter
+    return /^[0-9]{8}[A-Z]$/.test(val) || /^[XYZ][0-9]{7}[A-Z]$/.test(val);
+  } else if (doc === 'Pasaporte' || doc === 'TIE' || doc === 'Otros') {
+    return val.length >= 6;
+  }
+  return true;
+}
+
 function validateTraveler(p) {
   let ok = true;
   if (!tData[p] || !tData[p].doc) { document.getElementById(`doc-err-${p}`).classList.add('show'); ok = false; }
@@ -286,6 +297,52 @@ function validateTraveler(p) {
     const el = document.getElementById(`${p}-${f}`);
     if (el && !el.value.trim()) { el.classList.add('err'); ok = false; }
   });
+  // Format validation for document number
+  const ndocEl = document.getElementById(`${p}-ndoc`);
+  if (ndocEl && ndocEl.value.trim() && tData[p] && tData[p].doc) {
+    if (!validateFormat(tData[p].doc, ndocEl.value)) {
+      ndocEl.classList.add('err');
+      let errEl = document.getElementById(`ndoc-fmt-err-${p}`);
+      if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = `ndoc-fmt-err-${p}`;
+        errEl.className = 'field-err show';
+        errEl.style.marginTop = '4px';
+        ndocEl.parentNode.appendChild(errEl);
+      }
+      if (tData[p].doc === 'DNI') {
+        errEl.textContent = 'Formato incorrecto. DNI: 8 números + letra (12345678A). NIE: X/Y/Z + 7 números + letra.';
+      } else {
+        errEl.textContent = 'El número de documento debe tener al menos 6 caracteres.';
+      }
+      errEl.style.display = 'block';
+      ok = false;
+    } else {
+      const errEl = document.getElementById(`ndoc-fmt-err-${p}`);
+      if (errEl) errEl.style.display = 'none';
+    }
+  }
+  // Soporte minimum length when DNI
+  const soporteEl = document.getElementById(`${p}-soporte`);
+  if (soporteEl && soporteEl.value.trim() && tData[p] && tData[p].doc === 'DNI') {
+    if (soporteEl.value.trim().length < 6) {
+      soporteEl.classList.add('err');
+      let errEl = document.getElementById(`soporte-fmt-err-${p}`);
+      if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.id = `soporte-fmt-err-${p}`;
+        errEl.className = 'field-err show';
+        errEl.style.marginTop = '4px';
+        soporteEl.parentNode.appendChild(errEl);
+      }
+      errEl.textContent = 'El número de soporte debe tener al menos 6 caracteres.';
+      errEl.style.display = 'block';
+      ok = false;
+    } else {
+      const errEl = document.getElementById(`soporte-fmt-err-${p}`);
+      if (errEl) errEl.style.display = 'none';
+    }
+  }
   return ok;
 }
 
