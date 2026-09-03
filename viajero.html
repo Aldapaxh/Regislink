@@ -322,25 +322,25 @@ function validateTraveler(p) {
       if (errEl) errEl.style.display = 'none';
     }
   }
-  // Soporte minimum length when DNI
+  // Soporte format validation (always checked, not just when filled)
   const soporteEl = document.getElementById(`${p}-soporte`);
-  if (soporteEl && soporteEl.value.trim() && tData[p] && tData[p].doc === 'DNI') {
-    if (soporteEl.value.trim().length < 6) {
+  if (soporteEl && tData[p]) {
+    const soporteVal = soporteEl.value.trim();
+    let soporteErrEl = document.getElementById(`soporte-fmt-err-${p}`);
+    if (!soporteErrEl) {
+      soporteErrEl = document.createElement('div');
+      soporteErrEl.id = `soporte-fmt-err-${p}`;
+      soporteErrEl.className = 'field-err';
+      soporteErrEl.style.marginTop = '4px';
+      soporteEl.parentNode.appendChild(soporteErrEl);
+    }
+    if (soporteVal.length > 0 && soporteVal.length < 6) {
       soporteEl.classList.add('err');
-      let errEl = document.getElementById(`soporte-fmt-err-${p}`);
-      if (!errEl) {
-        errEl = document.createElement('div');
-        errEl.id = `soporte-fmt-err-${p}`;
-        errEl.className = 'field-err show';
-        errEl.style.marginTop = '4px';
-        soporteEl.parentNode.appendChild(errEl);
-      }
-      errEl.textContent = 'El número de soporte debe tener al menos 6 caracteres.';
-      errEl.style.display = 'block';
+      soporteErrEl.textContent = 'El número de soporte debe tener al menos 6 caracteres.';
+      soporteErrEl.style.display = 'block';
       ok = false;
     } else {
-      const errEl = document.getElementById(`soporte-fmt-err-${p}`);
-      if (errEl) errEl.style.display = 'none';
+      soporteErrEl.style.display = 'none';
     }
   }
   return ok;
