@@ -334,9 +334,16 @@ function validateTraveler(p) {
       soporteErrEl.style.marginTop = '4px';
       soporteEl.parentNode.appendChild(soporteErrEl);
     }
-    if (soporteVal.length > 0 && soporteVal.length < 6) {
+    const docTipo = tData[p].doc;
+    const soporteInvalid = soporteVal.length > 0 && (
+      (docTipo === 'DNI' && !/^[A-Z]{3}[0-9]{6}$/.test(soporteVal.toUpperCase())) ||
+      (docTipo !== 'DNI' && soporteVal.length < 6)
+    );
+    if (soporteInvalid) {
       soporteEl.classList.add('err');
-      soporteErrEl.textContent = 'El número de soporte debe tener al menos 6 caracteres.';
+      soporteErrEl.textContent = docTipo === 'DNI'
+        ? 'Formato incorrecto. Número de soporte del DNI: 3 letras + 6 números (ej. AAA123456).'
+        : 'El número de soporte debe tener al menos 6 caracteres.';
       soporteErrEl.style.display = 'block';
       ok = false;
     } else {
