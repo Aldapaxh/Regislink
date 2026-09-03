@@ -232,7 +232,7 @@ function addTraveler() {
       <div class="grid">
         <div class="field"><label>Nombre <span class="req">*</span></label><input id="${p}-nombre" type="text" placeholder="Ana" oninput="clearErr(this)"></div>
         <div class="field"><label>Primer apellido <span class="req">*</span></label><input id="${p}-ap1" type="text" placeholder="García" oninput="clearErr(this)"></div>
-        <div class="field full"><label>Segundo apellido</label><input id="${p}-ap2" type="text" placeholder="Martínez"></div>
+        <div class="field full"><label>Segundo apellido <span class="req">*</span></label><input id="${p}-ap2" type="text" placeholder="Martínez"></div>
       </div>
       <hr class="div">
       <div class="card-title" style="margin-bottom:10px;">
@@ -241,12 +241,12 @@ function addTraveler() {
       </div>
       <div class="grid">
         <div class="field"><label>País <span class="req">*</span></label><input id="${p}-pais" type="text" placeholder="España" oninput="clearErr(this)"></div>
-        <div class="field"><label>Provincia</label><input id="${p}-prov" type="text" placeholder="Bizkaia"></div>
-        <div class="field"><label>Código postal</label><input id="${p}-cp" type="text" placeholder="48001"></div>
-        <div class="field"><label>Municipio</label><input id="${p}-mun" type="text" placeholder="Bilbao"></div>
-        <div class="field full"><label>Dirección</label><input id="${p}-dir" type="text" placeholder="Calle Gran Vía 1, 2º"></div>
-        <div class="field"><label>Teléfono</label><input id="${p}-tel" type="tel" placeholder="+34 600 000 000"></div>
-        <div class="field"><label>Correo electrónico</label><input id="${p}-email" type="email" placeholder="correo@ejemplo.com"></div>
+        <div class="field"><label>Provincia <span class="req">*</span></label><input id="${p}-prov" type="text" placeholder="Bizkaia"></div>
+        <div class="field"><label>Código postal <span class="req">*</span></label><input id="${p}-cp" type="text" placeholder="48001"></div>
+        <div class="field"><label>Municipio <span class="req">*</span></label><input id="${p}-mun" type="text" placeholder="Bilbao"></div>
+        <div class="field full"><label>Dirección <span class="req">*</span></label><input id="${p}-dir" type="text" placeholder="Calle Gran Vía 1, 2º"></div>
+        <div class="field"><label>Teléfono <span class="req">*</span></label><input id="${p}-tel" type="tel" placeholder="+34 600 000 000"></div>
+        <div class="field"><label>Correo electrónico <span class="req">*</span></label><input id="${p}-email" type="email" placeholder="correo@ejemplo.com"></div>
       </div>
       ${showRel ? `<div class="field" style="margin-top:12px;"><label>Parentesco / relación</label><input id="${p}-rel" type="text" placeholder="Cónyuge, hijo/a, amigo/a..."></div>` : ''}
     </div>`;
